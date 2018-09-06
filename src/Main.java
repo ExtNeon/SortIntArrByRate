@@ -4,7 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Кирилл on 06.09.2018.
+ * Программа читает отформатированный целочисленный массив из текстового файла "input.txt" и сортирует его по частоте появления
+ * определённого числа, а затем записывет в файл "output.txt" с тем же форматированием.
+ * Пример: 4 2 69 2 5 3 2 4
+ * Выход: 2 2 2 4 4 69 5 3
+ * Автор: Малякин Кирилл
  */
 class Main {
 
@@ -27,6 +31,13 @@ class Main {
 
     }
 
+    /**
+     * Считавает содержимое файла filename, парсит в нём числа с пробелами в качестве разделителей и возвращает их в виде массива
+     *
+     * @param filename Путь до файла, который будет прочитан
+     * @return ArrayList of Integer с числами, извлечёнными из файла
+     * @throws IOException В случае ошибок ввода - вывода
+     */
     private static ArrayList<Integer> readIntegerArrayFromFile(String filename) throws IOException {
         Matcher matcher = Pattern.compile(REGEX).matcher(readContentOfTextFile(filename));
         ArrayList<Integer> result = new ArrayList<>();
@@ -36,6 +47,12 @@ class Main {
         return result;
     }
 
+    /**
+     * Открывает файл filename и возвращает его содержимое в виде строки
+     * @param filename Путь до файла, который необходимо прочитать
+     * @return Содержимое файла в виде строки
+     * @throws IOException в случае ошибок ввода - вывода
+     */
     private static String readContentOfTextFile(String filename) throws IOException {
         if (!new File(filename).exists()) {
             throw new FileNotFoundException(filename);
@@ -50,6 +67,11 @@ class Main {
         return result.toString();
     }
 
+    /**
+     * Форматирует ArrayList of Integer таким образом, чтобы значения элементов разделялись пробелом.
+     * @param list ArrayList of Integer, который будет отформатирован
+     * @return Строка с элементами массива, отделёнными друг от друга символом пробела
+     */
     private static String formatIntArrayAsAStringWithSpacesBetween(ArrayList<Integer> list) {
         StringBuilder result = new StringBuilder();
         for (Integer currentInt : list) {
@@ -59,6 +81,12 @@ class Main {
         return result.toString();
     }
 
+    /**
+     * Записывает в файл filename строку. В случае, если такой файл существует - перезаписывает его
+     * @param filename Имя файла, в который будет записана строка
+     * @param content Строка, которую необходимо записать в файл
+     * @throws IOException В случае ошибок ввода-вывода
+     */
     private static void writeStrToFile(String filename, String content) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             writer.write(content);
@@ -66,6 +94,10 @@ class Main {
         }
     }
 
+    /**
+     * Сортирует ArrayList of Integer по частоте появления в нём чисел в порядке убывания.
+     * @param array ArrayList of Integer, который необходимо отсортировать
+     */
     private static void sortNumbersByRate(ArrayList<Integer> array) {
         ArrayList<IntRateContainer> numbersContainer = new ArrayList<>();
         for (int num : array) {
@@ -90,6 +122,10 @@ class Main {
         }
     }
 
+    /**
+     * Сортирует ArrayList с объектами IntRateContainer по полю rate в порядке убывания.
+     * @param list ArrayList с объектами IntRateContainer
+     */
     private static void sortIntRateContainerListByRate(ArrayList<IntRateContainer> list) {
         IntRateContainer buff;
         int left = 0;
@@ -114,6 +150,11 @@ class Main {
         } while (left < right);
     }
 
+    /**
+     * Примитивный класс - контейнер, содержащий два целочисленных поля: value, в котором сохраняется само число
+     * и rate, в котором хранится частота появления числа value в массиве. Содержит конструктор, позволяющий задать
+     * поле value сразу при создании. Поле rate инициализируется единицей.
+     */
     private static class IntRateContainer {
         final int value;
         int rate;
@@ -121,11 +162,6 @@ class Main {
         IntRateContainer(int value) {
             this.rate = 1;
             this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return "" + value;
         }
     }
 }
